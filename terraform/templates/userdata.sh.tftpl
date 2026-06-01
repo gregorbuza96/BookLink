@@ -1,0 +1,62 @@
+#!/bin/bash
+# BookLink k3s single-node bootstrap. Logs to /var/log/booklink-bootstrap.log
+set -euxo pipefail
+exec > /var/log/booklink-bootstrap.log 2>&1
+
+# ── 1. AWS CLI (used to fetch ECR pull tokens via the instance role) ──
+dnf install -y unzip
+curl -s "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o /tmp/awscliv2.zip
+unzip -q /tmp/awscliv2.zip -d /tmp
+/tmp/aws/install
+
+# ── 2. Install k3s (ships kubectl + Traefik ingress + local-path storage) ──
+curl -sfL https://get.k3s.io | sh -
+
+# Wait until the API server is responding
+until k3s kubectl get nodes >/dev/null 2>&1; do sleep 5; done
+
+# ── 3. ECR pull-credential refresh (tokens expire every 12h) ──
+cat > /usr/local/bin/refresh-ecr-creds.sh <<'SCRIPT'
+#!/bin/bash
+set -euo pipefail
+export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+k3s kubectl create namespace booklink --dry-run=client -o yaml | k3s kubectl apply -f -
+TOKEN=$(aws ecr get-login-password --region ${region})
+k3s kubectl create secret docker-registry ecr-creds -n booklink \
+  --docker-server=${ecr_registry} \
+  --docker-username=AWS \
+  --docker-password="$TOKEN" \
+  --dry-run=client -o yaml | k3s kubectl apply -f -
+SCRIPT
+chmod +x /usr/local/bin/refresh-ecr-creds.sh
+
+cat > /etc/systemd/system/ecr-creds.service <<'UNIT'
+[Unit]
+Description=Refresh ECR pull credentials
+After=k3s.service
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/refresh-ecr-creds.sh
+UNIT
+
+cat > /etc/systemd/system/ecr-creds.timer <<'UNIT'
+[Unit]
+Description=Refresh ECR pull credentials periodically
+[Timer]
+OnBootSec=30s
+OnUnitActiveSec=6h
+[Install]
+WantedBy=timers.target
+UNIT
+
+systemctl daemon-reload
+systemctl enable --now ecr-creds.timer
+/usr/local/bin/refresh-ecr-creds.sh || true
+
+# ── 4. Deploy the whole stack via k3s auto-deploy manifests ──
+mkdir -p /var/lib/rancher/k3s/server/manifests
+cat > /var/lib/rancher/k3s/server/manifests/booklink.yaml <<'BOOKLINK_MANIFESTS_EOF'
+${manifests}
+BOOKLINK_MANIFESTS_EOF
+
+echo "Bootstrap complete. Pods will start once images are present in ECR."
