@@ -1,0 +1,24 @@
+# Copy to terraform.tfvars and fill in. Do NOT commit terraform.tfvars.
+# Sensitive values (db_password) are best passed via environment instead:
+#   export TF_VAR_db_password='a-strong-password'
+
+region      = "eu-central-1"
+project     = "booklink"
+environment = "dev"
+
+# EKS sizing — defaults are fine for a few days of testing.
+kubernetes_version  = "1.30"
+node_instance_types = ["t3.large"] # use ["t3.medium"] to save ~$1/day (tighter)
+node_desired_size   = 2
+
+# RDS
+db_instance_class = "db.t4g.micro"
+db_username       = "booklink"
+# db_password     = "SET-VIA-TF_VAR_db_password"   # leave out of this file
+
+# cert-manager / Let's Encrypt
+acme_email = "you@example.com" # PLACEHOLDER
+
+# Set false on the first apply if the kube/helm providers fail to
+# authenticate before the cluster exists, then true on a second apply.
+install_cluster_addons = true
