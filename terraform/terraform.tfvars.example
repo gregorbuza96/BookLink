@@ -1,0 +1,22 @@
+# Copy to terraform.tfvars and fill in. Do NOT commit terraform.tfvars.
+# Pass secrets via environment instead of this file:
+#   export TF_VAR_db_password='a-strong-password'
+#   export TF_VAR_jwt_secret='a-long-random-secret'
+
+region      = "eu-central-1"
+project     = "booklink"
+environment = "dev"
+
+# Lock SSH + the k3s API to your own IP (find it: curl ifconfig.me).
+# Leave default 0.0.0.0/0 only if you understand the exposure.
+admin_cidr = "0.0.0.0/0" # PLACEHOLDER -> e.g. "203.0.113.10/32"
+
+# An EXISTING EC2 key pair name, so you can SSH in. "" = no SSH.
+key_name = "" # PLACEHOLDER -> e.g. "my-keypair"
+
+# Smallest box that fits the full stack. t4g.small (2GB) will OOM.
+instance_type = "t4g.medium"
+
+# "spot" = cheapest (~$8-10/mo, auto-restarts on interruption, data kept).
+# "on-demand" = no interruptions (~$26/mo).
+capacity_type = "spot"
