@@ -4,13 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.roombridge</groupId>
-        <artifactId>roombridge-parent</artifactId>
+        <groupId>com.booklink</groupId>
+        <artifactId>booklink-parent</artifactId>
         <version>1.0.0</version>
     </parent>
 
     <artifactId>hotel-service</artifactId>
-    <name>RoomBridge Hotel Service</name>
+    <name>BookLink Hotel Service</name>
 
     <dependencies>
         <dependency>

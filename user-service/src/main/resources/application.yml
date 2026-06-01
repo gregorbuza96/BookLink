@@ -22,4 +22,4 @@ management:
 
 logging:
   level:
-    com.roombridge: DEBUG
+    com.booklink: DEBUG

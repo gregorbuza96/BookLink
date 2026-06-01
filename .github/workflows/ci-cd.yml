@@ -1,4 +1,4 @@
-name: RoomBridge CI/CD — EKS
+name: BookLink CI/CD — EKS
 
 on:
   push:
@@ -9,8 +9,8 @@ on:
 env:
   AWS_REGION: eu-central-1
   ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com
-  EKS_CLUSTER: roombridge-eks
-  K8S_NAMESPACE: roombridge
+  EKS_CLUSTER: booklink-eks
+  K8S_NAMESPACE: booklink
 
 jobs:
   # ── Build & Test ────────────────────────────────────────
@@ -29,7 +29,7 @@ jobs:
 
       - name: Run monolith tests
         run: |
-          cd " roombridge-backend"
+          cd " booklink-backend"
           ./mvnw test -Dspring.profiles.active=test
 
       - name: Build microservices JARs
@@ -70,16 +70,16 @@ jobs:
           TAG=${{ github.sha }}
           for SERVICE in config-server api-gateway user-service hotel-service booking-service; do
             # Create ECR repo if it doesn't exist
-            aws ecr describe-repositories --repository-names roombridge/$SERVICE 2>/dev/null || \
-              aws ecr create-repository --repository-name roombridge/$SERVICE
+            aws ecr describe-repositories --repository-names booklink/$SERVICE 2>/dev/null || \
+              aws ecr create-repository --repository-name booklink/$SERVICE
 
             docker build \
-              -t $ECR_REGISTRY/roombridge/$SERVICE:$TAG \
-              -t $ECR_REGISTRY/roombridge/$SERVICE:latest \
+              -t $ECR_REGISTRY/booklink/$SERVICE:$TAG \
+              -t $ECR_REGISTRY/booklink/$SERVICE:latest \
               ./$SERVICE
 
-            docker push $ECR_REGISTRY/roombridge/$SERVICE:$TAG
-            docker push $ECR_REGISTRY/roombridge/$SERVICE:latest
+            docker push $ECR_REGISTRY/booklink/$SERVICE:$TAG
+            docker push $ECR_REGISTRY/booklink/$SERVICE:latest
           done
 
   # ── Deploy to EKS ───────────────────────────────────────

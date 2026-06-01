@@ -1,8 +1,8 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: roombridge-ingress
-  namespace: roombridge
+  name: booklink-ingress
+  namespace: booklink
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -12,10 +12,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - api.roombridge.yourdomain.com
-      secretName: roombridge-tls
+        - api.booklink.yourdomain.com
+      secretName: booklink-tls
   rules:
-    - host: api.roombridge.yourdomain.com
+    - host: api.booklink.yourdomain.com
       http:
         paths:
           - path: /
