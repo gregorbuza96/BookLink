@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: booking-service
-  namespace: roombridge
+  namespace: booklink
 spec:
   replicas: 2
   selector:
@@ -28,11 +28,11 @@ spec:
             - name: DB_HOST
               value: db-bookings
             - name: DB_USER
-              value: roombridge
+              value: booklink
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: roombridge-secrets
+                  name: booklink-secrets
                   key: db-password
             - name: HOTEL_SERVICE_URL
               value: http://hotel-service:8082
@@ -41,7 +41,7 @@ spec:
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: roombridge-secrets
+                  name: booklink-secrets
                   key: jwt-secret
           readinessProbe:
             httpGet:
@@ -61,7 +61,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: booking-service
-  namespace: roombridge
+  namespace: booklink
 spec:
   selector:
     app: booking-service

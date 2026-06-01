@@ -5,15 +5,15 @@ services:
   db-users:
     image: postgres:16-alpine
     environment:
-      POSTGRES_DB: roombridge_users
-      POSTGRES_USER: roombridge
-      POSTGRES_PASSWORD: roombridge123
+      POSTGRES_DB: booklink_users
+      POSTGRES_USER: booklink
+      POSTGRES_PASSWORD: booklink123
     ports:
       - "5433:5432"
     volumes:
       - pgdata-users:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U roombridge"]
+      test: ["CMD-SHELL", "pg_isready -U booklink"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -21,15 +21,15 @@ services:
   db-hotels:
     image: postgres:16-alpine
     environment:
-      POSTGRES_DB: roombridge_hotels
-      POSTGRES_USER: roombridge
-      POSTGRES_PASSWORD: roombridge123
+      POSTGRES_DB: booklink_hotels
+      POSTGRES_USER: booklink
+      POSTGRES_PASSWORD: booklink123
     ports:
       - "5434:5432"
     volumes:
       - pgdata-hotels:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U roombridge"]
+      test: ["CMD-SHELL", "pg_isready -U booklink"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -37,15 +37,15 @@ services:
   db-bookings:
     image: postgres:16-alpine
     environment:
-      POSTGRES_DB: roombridge_bookings
-      POSTGRES_USER: roombridge
-      POSTGRES_PASSWORD: roombridge123
+      POSTGRES_DB: booklink_bookings
+      POSTGRES_USER: booklink
+      POSTGRES_PASSWORD: booklink123
     ports:
       - "5435:5432"
     volumes:
       - pgdata-bookings:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U roombridge"]
+      test: ["CMD-SHELL", "pg_isready -U booklink"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -94,8 +94,8 @@ services:
     environment:
       CONFIG_SERVER_URL: http://config-server:8888
       DB_HOST: db-users
-      DB_USER: roombridge
-      DB_PASSWORD: roombridge123
+      DB_USER: booklink
+      DB_PASSWORD: booklink123
       JWT_SECRET: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
     depends_on:
       config-server:
@@ -110,8 +110,8 @@ services:
     environment:
       CONFIG_SERVER_URL: http://config-server:8888
       DB_HOST: db-hotels
-      DB_USER: roombridge
-      DB_PASSWORD: roombridge123
+      DB_USER: booklink
+      DB_PASSWORD: booklink123
       REDIS_HOST: redis
       JWT_SECRET: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
     depends_on:
@@ -129,8 +129,8 @@ services:
     environment:
       CONFIG_SERVER_URL: http://config-server:8888
       DB_HOST: db-bookings
-      DB_USER: roombridge
-      DB_PASSWORD: roombridge123
+      DB_USER: booklink
+      DB_PASSWORD: booklink123
       HOTEL_SERVICE_URL: http://hotel-service:8082
       USER_SERVICE_URL: http://user-service:8081
       JWT_SECRET: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
@@ -144,7 +144,7 @@ services:
 
   # ── Frontend ───────────────────────────────────────────
   frontend:
-    build: ./roombridge-frontend
+    build: ./booklink-frontend
     ports:
       - "4200:80"
     depends_on:

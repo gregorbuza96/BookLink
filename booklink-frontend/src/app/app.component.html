@@ -1,0 +1,31 @@
+<nav class="navbar">
+  <a class="navbar-brand" routerLink="/">BookLink</a>
+  <ul class="nav-links">
+    <li><a routerLink="/hotels" routerLinkActive="active">Hotels</a></li>
+    <li><a routerLink="/rooms" routerLinkActive="active">Rooms</a></li>
+    <li *ngIf="authService.isLoggedIn">
+      <a routerLink="/bookings" routerLinkActive="active">Bookings</a>
+    </li>
+    <li *ngIf="authService.isAdmin">
+      <a routerLink="/users" routerLinkActive="active">Users</a>
+    </li>
+  </ul>
+  <div class="nav-auth">
+    <ng-container *ngIf="authService.isLoggedIn; else loginLink">
+      <span class="nav-user">
+        {{ authService.currentUser?.username }}
+        <span class="badge" [class.badge-admin]="authService.isAdmin">
+          {{ authService.currentUser?.role }}
+        </span>
+      </span>
+      <button class="btn btn-outline btn-sm" (click)="logout()">Logout</button>
+    </ng-container>
+    <ng-template #loginLink>
+      <a routerLink="/login" class="btn btn-primary btn-sm">Login</a>
+    </ng-template>
+  </div>
+</nav>
+
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>
