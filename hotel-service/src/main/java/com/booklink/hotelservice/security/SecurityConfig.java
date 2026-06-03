@@ -1,6 +1,7 @@
 package com.booklink.hotelservice.security;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -26,7 +27,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/api/hotels/**", "/api/rooms/**",
                                 "/api/amenities/**", "/api/reviews/**").permitAll()
-                        .requestMatchers("/actuator/**").permitAll()
+                        .requestMatchers("/actuator/**", "/error").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/hotels/**", "/api/rooms/**",
                                 "/api/amenities/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/hotels/**", "/api/rooms/**",
@@ -37,5 +38,20 @@ public class SecurityConfig {
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
+    }
+
+    /**
+     * JwtAuthFilter is a @Component extending OncePerRequestFilter, so Spring Boot
+     * would also auto-register it as a plain servlet filter. That outer registration
+     * runs first, marks the request "already filtered", and its SecurityContext is
+     * then wiped by SecurityContextHolderFilter — so the in-chain invocation is
+     * skipped and every request looks anonymous (403). Disable the auto-registration
+     * so the filter runs ONLY inside the security chain.
+     */
+    @Bean
+    public FilterRegistrationBean<JwtAuthFilter> jwtAuthFilterRegistration(JwtAuthFilter filter) {
+        FilterRegistrationBean<JwtAuthFilter> registration = new FilterRegistrationBean<>(filter);
+        registration.setEnabled(false);
+        return registration;
     }
 }
