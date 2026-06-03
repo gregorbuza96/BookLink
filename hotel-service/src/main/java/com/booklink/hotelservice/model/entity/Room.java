@@ -21,6 +21,7 @@ public class Room {
     @Column(nullable = false) private Integer capacity;
     @Enumerated(EnumType.STRING) @Column(nullable = false) private RoomStatus status;
     private String description;
+    @Column(name = "image_url", length = 1000) private String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hotel_id") private Hotel hotel;

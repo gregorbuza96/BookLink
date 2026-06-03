@@ -5,10 +5,11 @@ import com.booklink.hotelservice.model.enums.RoomStatus;
 import com.booklink.hotelservice.model.enums.RoomType;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
-public class RoomDto {
+public class RoomDto implements Serializable {
     private Long id;
     @NotNull private Integer roomNumber;
     @NotNull private RoomType type;
@@ -19,5 +20,6 @@ public class RoomDto {
     private String description;
     private Long hotelId;
     private String hotelName;
+    private String imageUrl;
     private List<Long> amenityIds;
 }

@@ -45,6 +45,7 @@ public class HotelService {
         hotel.setCity(dto.getCity()); hotel.setCountry(dto.getCountry());
         hotel.setStarRating(dto.getStarRating()); hotel.setPhone(dto.getPhone());
         hotel.setEmail(dto.getEmail()); hotel.setDescription(dto.getDescription());
+        hotel.setImageUrl(dto.getImageUrl());
         HotelDto saved = toDto(hotelRepository.save(hotel));
         cacheService.evictHotel(id);
         return saved;
@@ -60,12 +61,14 @@ public class HotelService {
     private HotelDto toDto(Hotel h) {
         return HotelDto.builder().id(h.getId()).name(h.getName()).address(h.getAddress())
                 .city(h.getCity()).country(h.getCountry()).starRating(h.getStarRating())
-                .phone(h.getPhone()).email(h.getEmail()).description(h.getDescription()).build();
+                .phone(h.getPhone()).email(h.getEmail()).description(h.getDescription())
+                .imageUrl(h.getImageUrl()).build();
     }
 
     private Hotel toEntity(HotelDto dto) {
         return Hotel.builder().name(dto.getName()).address(dto.getAddress())
                 .city(dto.getCity()).country(dto.getCountry()).starRating(dto.getStarRating())
-                .phone(dto.getPhone()).email(dto.getEmail()).description(dto.getDescription()).build();
+                .phone(dto.getPhone()).email(dto.getEmail()).description(dto.getDescription())
+                .imageUrl(dto.getImageUrl()).build();
     }
 }

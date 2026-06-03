@@ -4,8 +4,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.io.Serializable;
+
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
-public class HotelDto {
+public class HotelDto implements Serializable {
     private Long id;
     @NotBlank private String name;
     private String address;
@@ -15,4 +17,5 @@ public class HotelDto {
     private String phone;
     private String email;
     private String description;
+    private String imageUrl;
 }

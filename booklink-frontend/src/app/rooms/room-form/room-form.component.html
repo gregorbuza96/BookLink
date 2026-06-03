@@ -72,6 +72,14 @@
       <div *ngIf="f['description'].errors?.['maxlength'] && f['description'].touched" class="invalid-feedback">Max 500 characters</div>
     </div>
 
+    <div class="form-group">
+      <label>Image URL</label>
+      <input formControlName="imageUrl" placeholder="https://...">
+      <img *ngIf="f['imageUrl'].value" [src]="f['imageUrl'].value" referrerpolicy="no-referrer"
+           onerror="this.style.display='none'"
+           style="margin-top:.5rem;max-height:140px;border-radius:8px;display:block">
+    </div>
+
     <div class="form-group" *ngIf="amenities.length > 0">
       <label>Amenities</label>
       <div class="amenity-grid">
