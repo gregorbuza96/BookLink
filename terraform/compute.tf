@@ -71,6 +71,12 @@ resource "aws_instance" "node" {
   }
 
   tags = merge(local.tags, { Name = "${local.name}-k3s" })
+
+  # user_data only runs on first boot; don't let later edits try to
+  # stop/start (impossible on a persistent spot request) or replace the box.
+  lifecycle {
+    ignore_changes = [user_data]
+  }
 }
 
 resource "aws_eip_association" "node" {
