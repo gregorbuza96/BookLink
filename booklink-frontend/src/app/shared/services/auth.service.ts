@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, map, of } from 'rxjs';
 
 export interface AuthUser {
   id: number;
@@ -15,15 +15,24 @@ export interface LoginRequest {
   password: string;
 }
 
+interface LoginResponse extends AuthUser {
+  token: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly apiUrl = environment.apiUrl + '/auth';
-  private currentUserSubject = new BehaviorSubject<AuthUser | null>(null);
+  private readonly TOKEN_KEY = 'booklink_token';
+  private readonly USER_KEY = 'booklink_user';
 
+  // Restore the session from localStorage so a page refresh keeps the user logged in.
+  private currentUserSubject = new BehaviorSubject<AuthUser | null>(this.loadStoredUser());
   currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient) {
-    this.fetchCurrentUser().subscribe({ error: () => {} });
+  constructor(private http: HttpClient) {}
+
+  get token(): string | null {
+    return localStorage.getItem(this.TOKEN_KEY);
   }
 
   get currentUser(): AuthUser | null {
@@ -39,20 +48,31 @@ export class AuthService {
   }
 
   login(credentials: LoginRequest): Observable<AuthUser> {
-    return this.http.post<AuthUser>(`${this.apiUrl}/login`, credentials, { withCredentials: true }).pipe(
-      tap(user => this.currentUserSubject.next(user))
+    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
+      map(res => {
+        const user: AuthUser = { id: res.id, username: res.username, email: res.email, role: res.role };
+        localStorage.setItem(this.TOKEN_KEY, res.token);
+        localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+        this.currentUserSubject.next(user);
+        return user;
+      })
     );
   }
 
-  logout(): Observable<any> {
-    return this.http.post(`${this.apiUrl}/logout`, {}, { withCredentials: true }).pipe(
-      tap(() => this.currentUserSubject.next(null))
-    );
+  // JWT is stateless — logging out just clears local state (no backend call).
+  logout(): Observable<void> {
+    localStorage.removeItem(this.TOKEN_KEY);
+    localStorage.removeItem(this.USER_KEY);
+    this.currentUserSubject.next(null);
+    return of(void 0);
   }
 
-  fetchCurrentUser(): Observable<AuthUser> {
-    return this.http.get<AuthUser>(`${this.apiUrl}/me`, { withCredentials: true }).pipe(
-      tap(user => this.currentUserSubject.next(user))
-    );
+  private loadStoredUser(): AuthUser | null {
+    const raw = localStorage.getItem(this.USER_KEY);
+    try {
+      return raw ? (JSON.parse(raw) as AuthUser) : null;
+    } catch {
+      return null;
+    }
   }
 }
