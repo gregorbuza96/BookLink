@@ -1,6 +1,7 @@
 package com.booklink.hotelservice.controller;
 
 import com.booklink.hotelservice.model.dto.RoomDto;
+import com.booklink.hotelservice.model.enums.RoomStatus;
 import com.booklink.hotelservice.service.RoomService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -48,5 +49,12 @@ public class RoomController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         roomService.deleteRoom(id);
+    }
+
+    // Internal endpoint used by booking-service to flag a room occupied/available.
+    @PatchMapping("/{id}/status")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateStatus(@PathVariable Long id, @RequestParam RoomStatus status) {
+        roomService.updateRoomStatus(id, status);
     }
 }
