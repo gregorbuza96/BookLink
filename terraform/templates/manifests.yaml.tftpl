@@ -283,7 +283,7 @@ spec:
             - { name: USER_SERVICE_URL, value: "http://user-service:8081" }
             - { name: HOTEL_SERVICE_URL, value: "http://hotel-service:8082" }
             - { name: BOOKING_SERVICE_URL, value: "http://booking-service:8083" }
-            - { name: ALLOWED_ORIGINS, value: "*" }
+            - { name: ALLOWED_ORIGINS, value: "${allowed_origins}" }
             - name: JWT_SECRET
               valueFrom: { secretKeyRef: { name: booklink-secrets, key: jwt-secret } }
           readinessProbe:

@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 public interface HotelClient {
 
     @GetMapping("/api/rooms/{id}")
-    RoomInfo getRoomById(@PathVariable Long id);
+    RoomInfo getRoomById(@PathVariable("id") Long id);
 
     @PatchMapping("/api/rooms/{id}/status")
-    void updateRoomStatus(@PathVariable Long id, @RequestParam String status);
+    void updateRoomStatus(@PathVariable("id") Long id, @RequestParam("status") String status);
 }
