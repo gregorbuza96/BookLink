@@ -26,14 +26,17 @@ public class RoomService {
     private final HotelRepository hotelRepository;
     private final AmenityRepository amenityRepository;
 
+    @Transactional(readOnly = true)
     public Page<RoomDto> getAllRooms(Pageable pageable) {
         return roomRepository.findAll(pageable).map(this::toDto);
     }
 
+    @Transactional(readOnly = true)
     public RoomDto getRoomById(Long id) {
         return toDto(findOrThrow(id));
     }
 
+    @Transactional(readOnly = true)
     public Page<RoomDto> getRoomsByHotel(Long hotelId, Pageable pageable) {
         return roomRepository.findByHotelId(hotelId, pageable).map(this::toDto);
     }
@@ -53,7 +56,8 @@ public class RoomService {
                 .roomNumber(dto.getRoomNumber()).type(dto.getType()).comfort(dto.getComfort())
                 .pricePerNight(dto.getPricePerNight()).capacity(dto.getCapacity())
                 .status(dto.getStatus() != null ? dto.getStatus() : RoomStatus.AVAILABLE)
-                .description(dto.getDescription()).hotel(hotel).amenities(amenities)
+                .description(dto.getDescription()).imageUrl(dto.getImageUrl())
+                .hotel(hotel).amenities(amenities)
                 .build();
         return toDto(roomRepository.save(room));
     }
@@ -64,6 +68,7 @@ public class RoomService {
         room.setType(dto.getType()); room.setComfort(dto.getComfort());
         room.setPricePerNight(dto.getPricePerNight()); room.setCapacity(dto.getCapacity());
         room.setStatus(dto.getStatus()); room.setDescription(dto.getDescription());
+        room.setImageUrl(dto.getImageUrl());
         if (dto.getAmenityIds() != null)
             room.setAmenities(amenityRepository.findAllById(dto.getAmenityIds()));
         return toDto(roomRepository.save(room));
@@ -94,6 +99,7 @@ public class RoomService {
                 .capacity(r.getCapacity()).status(r.getStatus()).description(r.getDescription())
                 .hotelId(r.getHotel() != null ? r.getHotel().getId() : null)
                 .hotelName(r.getHotel() != null ? r.getHotel().getName() : null)
+                .imageUrl(r.getImageUrl())
                 .amenityIds(r.getAmenities() != null
                         ? r.getAmenities().stream().map(a -> a.getId()).toList() : List.of())
                 .build();

@@ -43,7 +43,8 @@ export class RoomFormComponent implements OnInit {
       capacity:      [null, [Validators.required, Validators.min(1), Validators.max(4)]],
       status:        ['AVAILABLE', Validators.required],
       description:   ['', Validators.maxLength(500)],
-      hotelId:       [null]
+      hotelId:       [null],
+      imageUrl:      ['', Validators.maxLength(1000)]
     });
 
     this.hotelService.getAll(0, 100).subscribe({ next: p => this.hotels = p.content });

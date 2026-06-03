@@ -18,6 +18,7 @@ public class Hotel {
     private String phone;
     private String email;
     private String description;
+    @Column(name = "image_url", length = 1000) private String imageUrl;
 
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Room> rooms;

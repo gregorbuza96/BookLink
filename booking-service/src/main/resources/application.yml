@@ -10,6 +10,11 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: validate
+  cloud:
+    openfeign:
+      httpclient:
+        hc5:
+          enabled: true
 
 feign:
   circuitbreaker:

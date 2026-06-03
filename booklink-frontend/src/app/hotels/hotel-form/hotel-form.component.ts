@@ -31,7 +31,8 @@ export class HotelFormComponent implements OnInit {
       starRating:  [null, [Validators.min(1), Validators.max(5)]],
       phone:       [''],
       email:       ['', Validators.email],
-      description: ['', Validators.maxLength(1000)]
+      description: ['', Validators.maxLength(1000)],
+      imageUrl:    ['', Validators.maxLength(1000)]
     });
 
     this.hotelId = Number(this.route.snapshot.paramMap.get('id'));

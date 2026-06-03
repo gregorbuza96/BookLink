@@ -58,6 +58,14 @@
       <div *ngIf="f['description'].errors?.['maxlength'] && f['description'].touched" class="invalid-feedback">Max 1000 characters</div>
     </div>
 
+    <div class="form-group">
+      <label>Image URL</label>
+      <input formControlName="imageUrl" placeholder="https://...">
+      <img *ngIf="f['imageUrl'].value" [src]="f['imageUrl'].value" referrerpolicy="no-referrer"
+           onerror="this.style.display='none'"
+           style="margin-top:.5rem;max-height:140px;border-radius:8px;display:block">
+    </div>
+
     <div style="display:flex;gap:.75rem;margin-top:1rem">
       <button type="submit" class="btn btn-primary" [disabled]="loading">
         {{ loading ? 'Saving...' : (isEdit ? 'Update Hotel' : 'Create Hotel') }}

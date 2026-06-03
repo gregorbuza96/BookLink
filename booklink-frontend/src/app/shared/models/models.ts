@@ -16,6 +16,7 @@ export interface Hotel {
   phone?: string;
   email?: string;
   description?: string;
+  imageUrl?: string;
 }
 
 export interface Amenity {
@@ -35,6 +36,7 @@ export interface Room {
   description?: string;
   hotelId?: number;
   hotelName?: string;
+  imageUrl?: string;
   amenityIds?: number[];
   amenities?: Amenity[];
 }

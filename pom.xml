@@ -102,6 +102,9 @@
                     <configuration>
                         <source>17</source>
                         <target>17</target>
+                        <!-- Retain method parameter names so Spring can bind
+                             @PathVariable/@RequestParam without explicit names. -->
+                        <parameters>true</parameters>
                         <annotationProcessorPaths>
                             <path>
                                 <groupId>org.projectlombok</groupId>

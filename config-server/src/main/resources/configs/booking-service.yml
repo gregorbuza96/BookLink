@@ -22,6 +22,9 @@ resilience4j:
         failureRateThreshold: 50
         waitDurationInOpenState: 10s
         permittedNumberOfCallsInHalfOpenState: 3
+        ignoreExceptions:
+          - java.lang.IllegalStateException
+          - java.lang.IllegalArgumentException
       user-service:
         slidingWindowSize: 10
         failureRateThreshold: 50
@@ -31,6 +34,9 @@ resilience4j:
       hotel-service:
         maxAttempts: 3
         waitDuration: 500ms
+        ignoreExceptions:
+          - java.lang.IllegalStateException
+          - java.lang.IllegalArgumentException
       user-service:
         maxAttempts: 3
         waitDuration: 500ms
