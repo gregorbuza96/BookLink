@@ -24,6 +24,8 @@ locals {
     registry    = local.ecr_registry
     db_password = var.db_password
     jwt_secret  = var.jwt_secret
+    # Gateway CORS allowCredentials=true forbids "*"; use the node's own origin.
+    allowed_origins = "http://${aws_eip.node.public_ip}"
   })
 
   user_data = templatefile("${path.module}/templates/userdata.sh.tftpl", {
